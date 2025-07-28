@@ -169,9 +169,14 @@ def main():
       
     # Check if session is active
     start = time.time()
-    while not is_session_active() and time.time() - start < 1200:
-        print("Session is not active. Waiting for active session...")
-        time.sleep(2)  # Wait and check again
+    i = 0
+    while not is_session_active() and time.time() - start < 3600: # 1 hr (length of time the program waits before you have logged in as hotkey may not be registered if entered when not logged in)
+        if i < 10:
+            print("Session is not active. Waiting for active session...")
+            i += 1
+        else:
+            print("Session has been inactive for a while so will no longer be reporting as such.")
+        time.sleep(5)  # Wait and check again
     
     time.sleep(30)  # shadowplay appears to be (sometimes..) turning itself OFF automatically if it starts as on??
     # so, we wait until well after that check has occured. 30 seconds has been sufficient in my (limited) testing

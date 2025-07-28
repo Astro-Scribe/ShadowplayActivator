@@ -1,16 +1,5 @@
 import subprocess
 
-def is_shadowplay_recording():
-    """
-    Check if NVIDIA ShadowPlay is recording using multiple detection methods.
-    Returns True if ShadowPlay recording is detected.
-    """
-    
-    if _check_gpu_usage_nvidia_smi():
-        return True
-        
-    return False
-
 def _check_gpu_usage_nvidia_smi():
     try:
         # Run nvidia-smi to get GPU utilization
@@ -54,8 +43,8 @@ def _check_gpu_usage_nvidia_smi():
     return False
 
 
-def shadowplay_is_running():
-    """Returns True if shadowplay is already running, false if not."""
+def shadowplay_is_running() -> bool:
+    """Returns True if shadowplay is already running, False if not."""
     results = {}
     
     print("Method (nvidia-smi):")
