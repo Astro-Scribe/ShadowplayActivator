@@ -8,3 +8,4 @@ def add_to_startup_programs(path):
             winreg.SetValueEx(key, "shadowplay_activator", 0, winreg.REG_SZ, f'"{path}"')
     except Exception as e:
         print(f"Error while adding to startup: {e}")
+

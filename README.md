@@ -1,3 +1,5 @@
+# Note
+Updated October 2025 to work after recent small Instant Replay update.
 ### Download the shadowplay_activator.exe file above
 (Click the green '<> Code' button above, then 'Download ZIP', then extract the files - you can delete everything except the exe of course)
 ### Place it wherever you want on your computer for safekeeping
