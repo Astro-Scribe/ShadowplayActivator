@@ -1,41 +1,28 @@
-import subprocess
+import os
+from pathlib import Path
+import time
 
-def _check_gpu_usage_nvidia_smi():
-    try:
-        # Run nvidia-smi to get GPU utilization
-        result = subprocess.run([
-            'nvidia-smi', 
-            '--query-gpu=utilization.gpu,utilization.memory,encoder.stats.sessionCount,encoder.stats.averageFps',
-            '--format=csv,noheader,nounits'
-        ], capture_output=True, text=True, timeout=10)
-        
-        if result.returncode == 0:
-            lines = result.stdout.strip().split('\n')
-            for i, line in enumerate(lines):
-                parts = line.split(', ')
-                if len(parts) >= 3:
-                    encoder_sessions = parts[2] if parts[2] != '[Not Supported]' else '0'
-                    if encoder_sessions != '0' and encoder_sessions != '[Not Supported]':
-                        print(f" Active encoder sessions detected: {encoder_sessions}")
+def check_temp_recording_files():
+    """Check if any temporary recording file(s) are being actively written"""
+    temp_paths = [
+        Path(os.environ.get('LOCALAPPDATA', '')) / "Temp", #NOTE: this is the default for the new app. Unfortunate that it's not nvidia specific.. but whatever ig
+    ]
+    # example file: AppData\Local\Temp\9343b833-e7af-42ea-8a61-31bc41eefe2b\ShaE692.tmp
+    for temp_path in temp_paths:
+        if temp_path.exists():
+            for file in temp_path.rglob('*'):
+                if file.is_file() and file.suffix in ['.tmp', '.mp4']:
+                    if time.time() - file.stat().st_mtime < 10:
+                        print(f" Found active recording file: {file}")
                         return True
-        else:
-            print(f" nvidia-smi failed: {result.stderr}")
-            
-    except subprocess.TimeoutExpired:
-        print(" nvidia-smi timeout")
-    except FileNotFoundError:
-        print(" nvidia-smi not found in PATH")
-    except Exception as e:
-        print(f" nvidia-smi error: {e}")
     
     return False
-
 
 def shadowplay_is_running() -> bool:
     """Returns True if shadowplay is already running, False if not."""
     results = {}
     
-    results['nvidia_smi'] = _check_gpu_usage_nvidia_smi()
+    results['temp_recording_file'] = check_temp_recording_files()
     
     for method, result in results.items():
         print(f"{method}: {result}")
@@ -45,5 +32,5 @@ def shadowplay_is_running() -> bool:
     return overall
 
 if __name__ == "__main__":
-    print(f"Shadowplay is running: {shadowplay_is_running()}")
+    print(f"\nOverall result:\n    Shadowplay is running: {shadowplay_is_running()}")
 
