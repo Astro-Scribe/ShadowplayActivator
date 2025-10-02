@@ -174,7 +174,7 @@ def main():
         if i < 10:
             print("Session is not active. Waiting for active session...")
             i += 1
-        else:
+        elif i == 10:
             print("Session has been inactive for a while so will no longer be reporting as such.")
         time.sleep(5)  # Wait and check again
     
@@ -195,7 +195,6 @@ if __name__ == "__main__":
         with open(log_path, 'w'):
             pass
         
-        # Redirect stdout and stderr to the log file
         sys.stdout = open(log_path, 'a')
         sys.stderr = sys.stdout
         
@@ -209,7 +208,6 @@ if __name__ == "__main__":
         print(f"Error: {str(e)}")
         sys.exit(1)
     finally:
-        # Make sure to close the log file
         if hasattr(sys.stdout, 'close') and sys.stdout != sys.__stdout__:
             sys.stdout.close()
             sys.stdout = sys.__stdout__
