@@ -13,20 +13,8 @@ def _check_gpu_usage_nvidia_smi():
             lines = result.stdout.strip().split('\n')
             for i, line in enumerate(lines):
                 parts = line.split(', ')
-                if len(parts) >= 4:
-                    gpu_util = int(parts[0]) if parts[0] != '[Not Supported]' else 0
-                    mem_util = int(parts[1]) if parts[1] != '[Not Supported]' else 0
+                if len(parts) >= 3:
                     encoder_sessions = parts[2] if parts[2] != '[Not Supported]' else '0'
-                    encoder_fps = parts[3] if parts[3] != '[Not Supported]' else '0'
-                    
-                    print(f" GPU {i} - Util: {gpu_util}%, Memory: {mem_util}%, Encoder Sessions: {encoder_sessions}, FPS: {encoder_fps}")
-                    
-                    # this led to false positives
-                    #if gpu_util > 15:
-                    #    print(f" High GPU utilization detected: {gpu_util}%")
-                    #    return True
-                        
-                    # Active encoder sessions definitely indicate recording
                     if encoder_sessions != '0' and encoder_sessions != '[Not Supported]':
                         print(f" Active encoder sessions detected: {encoder_sessions}")
                         return True
@@ -47,7 +35,6 @@ def shadowplay_is_running() -> bool:
     """Returns True if shadowplay is already running, False if not."""
     results = {}
     
-    print("Method (nvidia-smi):")
     results['nvidia_smi'] = _check_gpu_usage_nvidia_smi()
     
     for method, result in results.items():
@@ -56,3 +43,7 @@ def shadowplay_is_running() -> bool:
     overall = any(results.values())
     
     return overall
+
+if __name__ == "__main__":
+    print(f"Shadowplay is running: {shadowplay_is_running()}")
+
