@@ -8,8 +8,10 @@ import sys
 import os
 import psutil
 from win32 import win32ts
+
 from monitor import shadowplay_is_running
 from utility import add_to_startup_programs
+from logger_config import logger
 
 # Define constants for key codes
 ALT = 0x12
@@ -102,20 +104,12 @@ def press_key_combination(keys):
 
 def activate_shadowplay():
     """Activate NVIDIA ShadowPlay by pressing Alt+Shift+F10"""
-    print("Activating NVIDIA ShadowPlay with Alt+Shift+F10...")
+    logger.info("Activating NVIDIA ShadowPlay with Alt+Shift+F10...")
     # Press Alt+Shift+F10
     press_key_combination([ALT, SHIFT, F10])
-    print("Key combination sent!")
+    logger.info("Key combination sent!")
 
-def get_current_username():
-    """Get the username of the currently logged-in user"""
-    try:
-        return os.getlogin()
-    except:
-        try:
-            return os.environ.get('USERNAME', '')
-        except:
-            return "Uknown"
+
 
 def get_targeted_user():
     config_path = r"C:\ProgramData\ShadowPlayConfig\target_user.txt"
@@ -132,7 +126,7 @@ def get_targeted_user():
                 f.write(username)
             return username
     except Exception as e:
-        print(f"error with get targeted user: {str(e)}\nWill return current username")
+        logger.info(f"error with get targeted user: {str(e)}\nWill return current username")
         
     # Default to current user
     return get_current_username()
@@ -145,7 +139,7 @@ def is_session_active():
         session_id = win32ts.WTSGetActiveConsoleSessionId()
         return session_id != 0xFFFFFFFF
     except Exception as e:
-        print(f"Error while checking if session is active: {str(e)}")
+        logger.info(f"Error while checking if session is active: {str(e)}")
         return True
 
 def wait_for_desktop_ready():
@@ -172,42 +166,30 @@ def main():
     i = 0
     while not is_session_active() and time.time() - start < 3600: # 1 hr (length of time the program waits before you have logged in as hotkey may not be registered if entered when not logged in)
         if i < 10:
-            print("Session is not active. Waiting for active session...")
+            logger.info("Session is not active. Waiting for active session...")
             i += 1
         elif i == 10:
-            print("Session has been inactive for a while so will no longer be reporting as such.")
+            logger.info("Session has been inactive for a while so will no longer be reporting as such.")
         time.sleep(5)  # Wait and check again
     
     time.sleep(30)  # shadowplay appears to be (sometimes..) turning itself OFF automatically if it starts as on??
     # so, we wait until well after that check has occured. 30 seconds has been sufficient in my (limited) testing
     if shadowplay_is_running():
-       print("Shadowplay is already on!")
+       logger.info("Shadowplay is already on!")
     else:
         activate_shadowplay()
 
 if __name__ == "__main__":
     try:
-        current_user = get_current_username()
-        log_dir = os.path.join(os.environ.get('TEMP', 'C:\\Temp'), 'ShadowPlayActivator') # like this: users\username\appdata\local\temp\shadowplayactivator
-        os.makedirs(log_dir, exist_ok=True)
-        log_path = os.path.join(log_dir, f'shadowplay_activator_{current_user}.log')
-        print(f"Temp log file: {log_path}")
-        with open(log_path, 'w'):
-            pass
-        
-        sys.stdout = open(log_path, 'a')
-        sys.stderr = sys.stdout
-        
-        print(f"--- ShadowPlay Activator Run: {time.strftime('%Y-%m-%d %H:%M:%S')} ---")
+        print(f"Log file: {log_path}")
+
         if getattr(sys, 'frozen', False):
             add_to_startup_programs(path=os.path.abspath(sys.executable))
         else:
-            print("Running as python script, so not adding to startup programs.")
+            logger.info("Running as python script, so not adding to startup programs.")
+        
         main()
     except Exception as e:
-        print(f"Error: {str(e)}")
+        logger.error(str(e))
         sys.exit(1)
-    finally:
-        if hasattr(sys.stdout, 'close') and sys.stdout != sys.__stdout__:
-            sys.stdout.close()
-            sys.stdout = sys.__stdout__
+  

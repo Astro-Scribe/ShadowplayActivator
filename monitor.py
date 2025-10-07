@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import time
 import re
+from logger_config import logger
 
 def check_temp_recording_files():
     """Check if any temporary recording file(s) are being actively written\n
@@ -13,8 +14,10 @@ def check_temp_recording_files():
     shadowplay_file_pattern = re.compile(r'^Sha[0-9A-F]{4}\.tmp$', re.IGNORECASE)
     
     temp_path = Path(os.environ.get('LOCALAPPDATA', '')) / "Temp"
+    logger.info(f"Temp path is: {temp_path}")
     
     if not temp_path.exists():
+        logger.info(f"Temp path not found, hence must not be currently recording")
         return False
     
     for subdir in temp_path.iterdir():
@@ -23,11 +26,11 @@ def check_temp_recording_files():
                 if file.is_file():
                     if shadowplay_file_pattern.match(file.name):
                         if time.time() - file.stat().st_mtime < 10:
-                            print(f"check_temp_recording_files:    Found active recording file: {file}")
+                            logger.info(f"check_temp_recording_files:    Found active recording file: {file}")
                             return True
                     elif file.suffix in ['.tmp', '.mp4']:
                         if time.time() - file.stat().st_mtime < 10:
-                            print(f"check_temp_recording_files:    Found active recording file: {file}")
+                            logger.info(f"check_temp_recording_files:    Found active recording file: {file}")
                             return True
     
     return False
@@ -43,5 +46,5 @@ def shadowplay_is_running() -> bool:
     return overall
 
 if __name__ == "__main__":
-    print(f"\nOverall result:\n    Shadowplay is running: {shadowplay_is_running()}")
+    logger.info(f"\nOverall result:\n    Shadowplay is running: {shadowplay_is_running()}")
 
