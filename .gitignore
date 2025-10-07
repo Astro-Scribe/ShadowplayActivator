@@ -4,3 +4,4 @@ __pycache__/
 build/
 pyvenv.cfg
 venv/
+*.egg-info

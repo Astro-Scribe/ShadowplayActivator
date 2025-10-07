@@ -9,9 +9,9 @@ import os
 import psutil
 from win32 import win32ts
 
-from monitor import shadowplay_is_running
-from utility import add_to_startup_programs
-from logger_config import logger
+from shadowplayactivator.monitor import shadowplay_is_running
+from shadowplayactivator.utils.utility import add_to_startup_programs
+from shadowplayactivator.utils.logger_config import logger, log_path
 
 # Define constants for key codes
 ALT = 0x12
@@ -108,28 +108,6 @@ def activate_shadowplay():
     # Press Alt+Shift+F10
     press_key_combination([ALT, SHIFT, F10])
     logger.info("Key combination sent!")
-
-
-
-def get_targeted_user():
-    config_path = r"C:\ProgramData\ShadowPlayConfig\target_user.txt"
-    try:
-        if os.path.exists(config_path):
-            with open(config_path, 'r') as f:
-                username = f.read().strip()
-                if username:
-                    return username
-        else: # on first startup they need to login as the correct user
-            os.makedirs(os.path.dirname(config_path))
-            with open(config_path, 'w') as f:
-                username = get_current_username()
-                f.write(username)
-            return username
-    except Exception as e:
-        logger.info(f"error with get targeted user: {str(e)}\nWill return current username")
-        
-    # Default to current user
-    return get_current_username()
 
 def is_session_active():
     """

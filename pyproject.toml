@@ -1,5 +1,5 @@
 [project]
-name = "shadowplay_activator"
+name = "shadowplayactivator"
 version = "0.1.0"
 description = "Automatically starts Nvidia's 'Instant Replay' feature on windows startup"
 
