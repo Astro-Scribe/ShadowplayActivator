@@ -1,4 +1,5 @@
-python -m PyInstaller --onefile --noconsole shadowplay_activator.py
+rm shadowplay_activator.exe
+python -m PyInstaller --onefile --noconsole src/spa/shadowplay_activator.py
 mv dist/shadowplay_activator.exe .
 rmdir dist/
 rm shadowplay_activator.spec

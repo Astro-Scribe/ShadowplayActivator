@@ -1,6 +1,6 @@
 [project]
 name = "spa"
-version = "0.1.0"
+version = "1.0.1"
 description = "Automatically starts Nvidia's 'Instant Replay' feature on windows startup"
 
 [build-system]

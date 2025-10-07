@@ -51,6 +51,6 @@ This script works by searching for a temp file in a specific location. If the pr
 3. Navigate to: **Settings (⚙️) → Files and Disk Space** 
 4. Click **Select Temporary files location**
 5. Navigate to: `C:\Users\your_username\AppData\Local\Temp`
-6. Save the settings
+6. Save the settings (the tick at the top)
 
 This will ensure the temp files are created in the expected location.
