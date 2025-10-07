@@ -1,0 +1,8 @@
+[project]
+name = "shadowplay_activator"
+version = "0.1.0"
+description = "Automatically starts Nvidia's 'Instant Replay' feature on windows startup"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
