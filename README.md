@@ -1,4 +1,4 @@
-# Note
+### Note
 Updated October 2025 to work after recent small Instant Replay update.
 ### Download the shadowplay_activator.exe file above
 (Click the green '<> Code' button above, then 'Download ZIP', then extract the files - you can delete everything except the exe of course)
@@ -15,3 +15,12 @@ From now on, about 30 seconds after you start your computer and login, the progr
 This script is designed only to ensure that 'Instant Replay' (aka 'Shadowplay') is turned on just after your computer launches. It will not turn it back on if it is turned off by other programs like Netflix or other streaming platforms etc.
 It only works on Windows PCs with Nvidia App installed and running the overlay, with your hotkey/shortcut for activating Instant Replay set to 'Alt+Shift+F10'.
 Each time you move the program to a new location, ensure you run it manually once so it may add its new location to the startup programs for windows to run.
+
+## Debugging
+This script works by searching for a temp file being created in a specific spot. As such, it is possible for the program to think that shadowplay is not running even when it is - if the temp files are in a different spot than the default!
+You can fix this by adjusting your Temporary Files Location in the Nvidia overlay menu:
+    - Settings (cog wheel)
+    - Files and disk Space
+    - (make sure "Instant Replay"/Shadowplay is turned off) Select Temporary files location
+    - navigate to C:\\Users\your_username\AppData\Local\Temp
+    - Save it. 
